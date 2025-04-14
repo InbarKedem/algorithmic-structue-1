@@ -9,43 +9,53 @@ from q2_44 import insertion_sort_implementation
 from q4_44 import selection_sort_implementation
 
 #load data:
+# Load the Excel file with all sheets
+excel_file = pd.ExcelFile("data.xlsx")
 
-# Load the Excel file
-data_df = pd.read_excel("data.xlsx")
+# Get all sheet names
+sheet_names = excel_file.sheet_names
 
-# Convert to a format suitable for sorting
-data = data_df['sort_me'].tolist()  
+# Create a line graph comparing merge sort and insertion sort across sheet numbers
+plt.figure(figsize=(12, 8))
 
-#sort data and save results:
-##insertion sort:
-insertion_sort_array, insertion_sort_number_of_operations = insertion_sort_implementation(data)
+# Collect data for each sheet
+sheet_numbers = list(range(1, len(sheet_names) + 1))
+insertion_operations = []
+merge_operations = []
 
-##merge_sort:
-merge_sort_array , merge_sort_number_of_operations = merge_sort_implementation(data)
+# Get operation counts for each sheet
+for sheet_name in sheet_names:
+    data_df = pd.read_excel(excel_file, sheet_name=sheet_name)
+    data = data_df['sort_me'].tolist()
+    
+    # Run sorting algorithms
+    _, insertion_ops = insertion_sort_implementation(data)
+    _, merge_ops = merge_sort_implementation(data)
+    
+    insertion_operations.append(insertion_ops)
+    merge_operations.append(merge_ops)
 
-#plot figure:
-# Set up the plot
-plt.figure(figsize=(10, 6))
-algorithms = ['Insertion Sort', 'Merge Sort']
-operations = [insertion_sort_number_of_operations, merge_sort_number_of_operations]
-
-# Create the bar chart
-bars = plt.bar(algorithms, operations, color=['#3498db', '#2ecc71'])
+# Plot the lines - using sheet numbers on x-axis
+plt.plot(sheet_numbers, insertion_operations, marker='o', linestyle='-', linewidth=3, 
+         color='orange', label='Insertion Sort')
+plt.plot(sheet_numbers, merge_operations, marker='', linestyle='-', linewidth=3, 
+         color='blue', label='Merge Sort')
 
 # Add title and labels
-plt.title('Comparison of Basic Operations for Sorting Algorithms', fontsize=16)
-plt.ylabel('Number of Basic Operations', fontsize=12)
-plt.xlabel('Sorting Algorithm', fontsize=12)
+plt.title('Sorting Algorithm Operations by Sheet', fontsize=16)
+plt.xlabel('Sheet No.', fontsize=14)
+plt.ylabel('Count Number of Basic Operation', fontsize=14)
+plt.legend(fontsize=12, loc='upper right')
 
-# Add operation count on top of each bar
-for bar in bars:
-    height = bar.get_height()
-    plt.text(bar.get_x() + bar.get_width() / 2., height + 0.1,
-             f'{int(height):,}', ha='center', fontsize=10)
+# Set x-axis to show whole numbers only
+plt.xticks(sheet_numbers)
 
 # Add grid for better readability
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.grid(False)  # No grid to match the example image
 
-# Show the plot
+# Format the plot area
 plt.tight_layout()
+
+# Save the line graph
+plt.savefig("sorting_algorithms_comparison_by_sheet.png")
 plt.show()

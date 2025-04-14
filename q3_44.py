@@ -4,9 +4,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from q1_XY import merge_sort_implementation
-from q2_XY import insertion_sort_implementation
-from q4_XY import selection_sort_implementation
+from q1_44 import merge_sort_implementation
+from q2_44 import insertion_sort_implementation
+from q4_44 import selection_sort_implementation
 
 #load data:
 
